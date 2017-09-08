@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>WebRTC-Chapter 4 flag server</title>
+<style type="text/css">
+    body {
+        margin-top: 15px;
+        background-color: lightgoldenrodyellow;
+        font-family: sans-serif;
+        color: white;
+    }
+    video {
+        background: black;
+        border: 1px solid gray;
+    }
+    .page {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        width: 500px;
+        height: 500px;
+    }
+    #my {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        top: 15px;
+        right: 15px;
+    }
+    #their {
+        width: 500px;
+        height: 500px;
+    }
+</style>
+</head>
+<body>
+<div id="login-page" class="page">
+    <h2>Login As</h2>
+    <input type="text" id="username">
+    <button id="login">Login</button>
+</div>
+<div id="call-page" class="page">
+    <video id="my" autoplay></video>
+    <video id="their" autoplay></video>
+    <input type="text" id="their-username">
+    <button id="call">Call</button>
+    <button id="hang-up">Hang Up</button>
+</div>
+<script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+<script type="text/javascript" src="client.js?ver=1.1.0"></script>
+</body>
+</html>
