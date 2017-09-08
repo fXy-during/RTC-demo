@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Learning WebRTC-Chapter 2 : Get User Media </title>
+<style type="text/css">
+    .block{
+        width: 480px;
+        height: 320px;
+        border: 1px solid #000;
+    }
+    .grayscale{
+        -webkit-filter: grayscale(1);
+        -moz-filter: grayscale(1);
+        -ms-filter: grayscale(1);
+        -o-filter: grayscale(1);
+        filter: grayscale(1);
+    }
+    .sepia{
+        -webkit-filter: sepia(1);
+        -moz-filter: sepia(1);
+        -ms-filter: sepia(1);
+        -o-filter: sepia(1);
+        filter: sepia(1);
+    }
+    .invert{
+        -webkit-filter: invert(1);
+        -moz-filter: invert(1);
+        -ms-filter: invert(1);
+        -o-filter: invert(1);
+        filter: invert(1); 
+    }
+
+</style>
+</head>
+<body>
+    <div>Hello WebRTC </div>
+    <video class='block' autoplay></video>
+    <canvas class='block'></canvas>
+    <button id="capture">Cut screen</button>
+    <!-- <script type="text/javascript" src="main.js?ver=1.1.8"></script> -->
+
+    <script type="text/javascript" src="photobooth.js?ver=1.0.4"></script>
+
+</body>
+</html>
