@@ -2,9 +2,10 @@
 * @Author: fxy
 * @Date:   2017-08-08 19:53:42
 * @Last Modified by:   anchen
-* @Last Modified time: 2017-09-08 10:56:15
+* @Last Modified time: 2017-11-09 14:14:39
+* 
+* 11/09  API Update: videoNode.src = URL.createURL(blob)  => videoNode.srcObject = blob;
 */
-
 /*
 *
 *   Gloabal veriable
@@ -15,7 +16,8 @@ var name,
 
 //与服务器建立连接，传递服务器地址，再加上ws：//为前缀来实现
 //"ws://"+window.location.host+'/FTF/u/websocket'
-var connection = new WebSocket('ws://39.108.174.208:8080/FTF/u/websocket'); 
+// var connection = new WebSocket('ws://39.108.174.208:8080/FTF/u/websocket'); 
+var connection = new WebSocket('ws://localhost:8888'); 
 
 
 var loginPage = document.querySelector('#login-page'),
@@ -33,6 +35,9 @@ var myVideo = document.querySelector('#my'),
     myConnection,
     theirConnection,
     stream;
+
+
+
 
 //单击登录
 loginBtn.addEventListener('click', function(e){
@@ -76,6 +81,7 @@ function onLogin(success){
 function onOffer(offer, name){
     connectedUser = name;
     //接收远程SDP
+    console.log('接收到的offer', offer);
     myConnection.setRemoteDescription(new RTCSessionDescription(offer));
     //
     myConnection.createAnswer(function(answer){
@@ -95,6 +101,7 @@ function onAnswer(answer){
 }
 // ice 候选通道
 function onCandidate(candidate){
+     console.log('接收到的candidate', candidate);
     myConnection.addIceCandidate(new RTCIceCandidate(candidate));
 }
 // 挂断
@@ -148,21 +155,39 @@ function send(msg){
 
 function startConnection(){
     if (hasUserMedia()) { //获取视频流
-        navigator.getUserMedia({
+        var opts = {
             video: true,
-            audio: false
-        },function(myStream){
-            stream = myStream;
-            myVideo.src = window.URL.createObjectURL(stream);
-
-            if (hasRTCPeerConnection()){ 
-                setupPeerConnection(stream);
-            }else{
-                alert("sorry, your browser does not support WebRTC");
-            }
-        },function(err){
-            console.log(err);
-        })
+            audio: false,
+        }
+        navigator.mediaDevices.
+            getUserMedia(opts).
+            then(function(myStream){
+                stream = myStream;
+                // myVideo.src = window.URL.createObjectURL(stream);
+                myVideo.srcObject = stream;
+                if (hasRTCPeerConnection()){ 
+                    setupPeerConnection(stream);
+                }else{
+                    alert("sorry, your browser does not support WebRTC");
+                }
+            }).catch(function(err){
+                console.log(err);
+            })
+        // navigator.getUserMedia({
+        //     video: true,
+        //     audio: false
+        // },function(myStream){
+        //     stream = myStream;
+        //     myVideo.src = window.URL.createObjectURL(stream);
+        //     myVideo.srcObject = stream;
+        //     if (hasRTCPeerConnection()){ 
+        //         setupPeerConnection(stream);
+        //     }else{
+        //         alert("sorry, your browser does not support WebRTC");
+        //     }
+        // },function(err){
+        //     console.log(err);
+        // })
     }else{
         alert("sorry, your browser does not support WebRTC");
     }
@@ -171,14 +196,16 @@ function startConnection(){
 function setupPeerConnection(stream){
     var configuration = {
         "iceServers": [{
-            "url": "stun:stun.l.google.com:19302"  //google stun
+            "urls": "stun:stun.l.google.com:19302"  //google stun
         }]
     }
     myConnection = new RTCPeerConnection(configuration);
+    console.log('myConnection', myConnection);
     //设置流的监听
     myConnection.addStream(stream);
     myConnection.onaddstream = function(e){
-        theirVideo.src = window.URL.createObjectURL(e.stream);
+        // theirVideo.src = window.URL.createObjectURL(e.stream);
+        theirVideo.srcObject = e.stream;
     }
     //设置ice处理事件
     myConnection.onicecandidate = function(e){
@@ -222,7 +249,13 @@ function hasUserMedia(){
         navigator.msGetUserMedia;
     return !!navigator.getUserMedia;
 }
-
+function getUserMedia(opts, successCB, errorCB) {
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia(opts, successCB, errorCB)
+    } else if (MediaDevices.getUserMedia) {
+        MediaDevices.getUserMedia(opts, successCB, errorCB)
+    }
+}
 function hasRTCPeerConnection(){
     window.RTCPeerConnection = window.RTCPeerConnection || 
         window.webkitRTCPeerConnection || 
